@@ -12,6 +12,9 @@ class EditorWindow : public QMainWindow
 public:
     EditorWindow();
 
+private:
+    void createActions();
+
     QPlainTextEdit *textEdit;
 };
 
