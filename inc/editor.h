@@ -12,6 +12,11 @@ class EditorWindow : public QMainWindow
 public:
     EditorWindow();
 
+    void loadFile(const QString &fileName);
+
+private slots:
+    void open();
+
 private:
     void createActions();
 
