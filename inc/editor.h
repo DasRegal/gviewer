@@ -16,6 +16,7 @@ public:
 
 private slots:
     void open();
+//    void calc();
 
 private:
     void createActions();
