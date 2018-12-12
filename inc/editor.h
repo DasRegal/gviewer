@@ -21,6 +21,7 @@ private slots:
 
 private:
     void createActions();
+    float getValParam(const QString &line, QString param, bool *ok = nullptr, QString instr = "G1");
 
     QPlainTextEdit *textEdit;
 };

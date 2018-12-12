@@ -1,5 +1,5 @@
 #include <QtWidgets>
-#include <iostream>
+#include <QDebug>
 
 #include "inc/editor.h"
 
@@ -52,6 +52,24 @@ void EditorWindow::loadFile(const QString &fileName)
     textEdit->setPlainText(in.readAll());
 }
 
+float EditorWindow::getValParam(const QString &line, QString param, bool *ok, QString instr)
+{
+    float res = 0.0;
+    // Example:
+    // "G1 X100 Y200.03 F300"
+    // RegExp "G1.*Y\s*(\d+\.{0,1}\d+)" for Y
+    QString rxString = QString("%1.*%2\\s*(\\d+\\.{0,1}\\d+)").arg(instr, param);
+    QRegExp rx(rxString);
+    if (rx.indexIn(line) != -1)
+    {
+        res = rx.cap(1).toFloat();
+        *ok = true;
+    }
+    else
+        *ok = false;
+    return res;
+}
+
 void EditorWindow::calc()
 {
     QString gcode = textEdit->toPlainText();
@@ -63,8 +81,12 @@ void EditorWindow::calculate(const QString &gcode)
 {
     QString s(gcode);
     QTextStream text(&s);
-    QString line;
-    line = text.readLine();
-    std::string utf_line = line.toUtf8().constData();
-    std::cout << utf_line;
+    while(!text.atEnd())
+    {
+        bool ok = false;
+        QString line = text.readLine();
+        float x = getValParam(line, "X", &ok);
+        if (ok)
+            qDebug() << x;
+    }
 }
