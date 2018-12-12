@@ -1,4 +1,5 @@
 #include <QtWidgets>
+#include <iostream>
 
 #include "inc/editor.h"
 
@@ -28,6 +29,7 @@ void EditorWindow::createActions()
     const QIcon calcIcon = QIcon::fromTheme("gcode-calc", QIcon(":/images/calc.png"));
     QAction *calcAct = new QAction(calcIcon, tr("Calc"), this);
     calcAct->setStatusTip(tr("Calculate view"));
+    connect(calcAct, &QAction::triggered, this, &EditorWindow::calc);
     calcMenu->addAction(calcAct);
     commonToolBar->addAction(calcAct);
 }
@@ -48,4 +50,21 @@ void EditorWindow::loadFile(const QString &fileName)
 
     QTextStream in(&file);
     textEdit->setPlainText(in.readAll());
+}
+
+void EditorWindow::calc()
+{
+    QString gcode = textEdit->toPlainText();
+    if (!gcode.isEmpty())
+        calculate(gcode);
+}
+
+void EditorWindow::calculate(const QString &gcode)
+{
+    QString s(gcode);
+    QTextStream text(&s);
+    QString line;
+    line = text.readLine();
+    std::string utf_line = line.toUtf8().constData();
+    std::cout << utf_line;
 }

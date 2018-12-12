@@ -13,10 +13,11 @@ public:
     EditorWindow();
 
     void loadFile(const QString &fileName);
+    void calculate(const QString &gcode);
 
 private slots:
     void open();
-//    void calc();
+    void calc();
 
 private:
     void createActions();
