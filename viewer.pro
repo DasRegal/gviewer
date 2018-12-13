@@ -26,10 +26,14 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-    src/editor.cpp
+    src/editor.cpp \
+    src/glob_state.cpp \
+    src/point.cpp
 
 HEADERS += \
-    inc/editor.h
+    inc/editor.h \
+    inc/glob_state.h \
+    inc/point.h
 
 FORMS +=
 
