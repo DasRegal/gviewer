@@ -1,17 +1,19 @@
 #include <QtWidgets>
 #include <QDebug>
+#include <vector>
 
 #include "inc/editor.h"
+#include "inc/glob_state.h"
 
 EditorWindow::EditorWindow()
     : textEdit(new QPlainTextEdit)
 {
     setCentralWidget(textEdit);
 
-    createActions();
+    CreateActions();
 }
 
-void EditorWindow::createActions()
+void EditorWindow::CreateActions()
 {
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
     QToolBar *commonToolBar = addToolBar(tr("File"));
@@ -20,7 +22,7 @@ void EditorWindow::createActions()
     QAction *openAct = new QAction(openIcon, tr("&Open..."), this);
     openAct->setShortcuts(QKeySequence::Open);
     openAct->setStatusTip(tr("Open an existing file"));
-    connect(openAct, &QAction::triggered, this, &EditorWindow::open);
+    connect(openAct, &QAction::triggered, this, &EditorWindow::Open);
     fileMenu->addAction(openAct);
     commonToolBar->addAction(openAct);
 
@@ -29,19 +31,19 @@ void EditorWindow::createActions()
     const QIcon calcIcon = QIcon::fromTheme("gcode-calc", QIcon(":/images/calc.png"));
     QAction *calcAct = new QAction(calcIcon, tr("Calc"), this);
     calcAct->setStatusTip(tr("Calculate view"));
-    connect(calcAct, &QAction::triggered, this, &EditorWindow::calc);
+    connect(calcAct, &QAction::triggered, this, &EditorWindow::Calc);
     calcMenu->addAction(calcAct);
     commonToolBar->addAction(calcAct);
 }
 
-void EditorWindow::open()
+void EditorWindow::Open()
 {
     QString fileName = QFileDialog::getOpenFileName(this);
     if (!fileName.isEmpty())
-        loadFile(fileName);
+        LoadFile(fileName);
 }
 
-void EditorWindow::loadFile(const QString &fileName)
+void EditorWindow::LoadFile(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly)) {
@@ -52,7 +54,7 @@ void EditorWindow::loadFile(const QString &fileName)
     textEdit->setPlainText(in.readAll());
 }
 
-float EditorWindow::getValParam(const QString &line, QString param, bool *ok, QString instr)
+float EditorWindow::GetValParam(const QString &line, QString param, bool *ok, QString instr)
 {
     float res = 0.0;
     // Example:
@@ -70,23 +72,89 @@ float EditorWindow::getValParam(const QString &line, QString param, bool *ok, QS
     return res;
 }
 
-void EditorWindow::calc()
+GlobState::systemType_t EditorWindow::GetSystemType(const QString &line, bool *ok)
+{
+    *ok = false;
+    GlobState::systemType_t sysType = GlobState::ABS;
+
+    QRegExp rx("*G90*");
+    rx.setPatternSyntax(QRegExp::Wildcard);
+    if (rx.exactMatch(line))
+    {
+        sysType = GlobState::ABS;
+        *ok = true;
+        return sysType;
+    }
+
+    rx.setPattern("*G91*");
+    if (rx.exactMatch(line))
+    {
+        sysType = GlobState::REL;
+        *ok = true;
+        return sysType;
+    }
+    return sysType;
+}
+
+void EditorWindow::Parser(const QString &line)
+{
+    bool ok = false;
+    GlobState::systemType_t sysTypeTemp;
+
+    sysTypeTemp = GetSystemType(line, &ok);
+    if (ok)
+    {
+        globState_.SetSystemType(sysTypeTemp);
+    }
+
+    float x = GetValParam(line, "X", &ok);
+    if (ok)
+    {
+        globState_.SetGlobX(x, globState_.GetSystemType());
+    }
+    float y = GetValParam(line, "Y", &ok);
+    if (ok)
+    {
+        globState_.SetGlobY(y, globState_.GetSystemType());
+    }
+    float z = GetValParam(line, "Z", &ok);
+    if (ok)
+    {
+        globState_.SetGlobZ(z, globState_.GetSystemType());
+    }
+}
+
+void EditorWindow::Calc()
 {
     QString gcode = textEdit->toPlainText();
     if (!gcode.isEmpty())
-        calculate(gcode);
+        Calculate(gcode);
 }
 
-void EditorWindow::calculate(const QString &gcode)
+void EditorWindow::Calculate(const QString &gcode)
 {
     QString s(gcode);
     QTextStream text(&s);
+
+    typedef struct
+    {
+        uint countPoint;
+        bool isCompleteLine;
+        bool isDraw;
+
+    }  formatLine_t;
+
+    formatLine_t xPoint{.countPoint = 0, .isCompleteLine = false, .isDraw = true};
+    formatLine_t yPoint{.countPoint = 0, .isCompleteLine = false, .isDraw = true};
+    formatLine_t zPoint{.countPoint = 0, .isCompleteLine = false, .isDraw = true};
+
+
+
     while(!text.atEnd())
     {
-        bool ok = false;
+
         QString line = text.readLine();
-        float x = getValParam(line, "X", &ok);
-        if (ok)
-            qDebug() << x;
+        Parser(line);
+
     }
 }
