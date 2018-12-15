@@ -28,12 +28,14 @@ SOURCES += \
         main.cpp \
     src/editor.cpp \
     src/glob_state.cpp \
-    src/point.cpp
+    src/point.cpp \
+    src/line.cpp
 
 HEADERS += \
     inc/editor.h \
     inc/glob_state.h \
-    inc/point.h
+    inc/point.h \
+    inc/line.h
 
 FORMS +=
 
