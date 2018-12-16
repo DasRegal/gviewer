@@ -22,7 +22,7 @@ private slots:
 
 private:
     void  CreateActions();
-    float GetValParam(const QString &line, QString param, bool *ok = nullptr, QString instr = "G1");
+    std::optional<float> GetValParam(const QString &line, QString param, QString instr = "G1");
     void  Parser(const QString &line);
     std::optional<GlobState::systemType_t> GetSystemType(const QString &line);
 

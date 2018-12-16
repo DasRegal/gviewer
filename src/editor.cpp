@@ -55,22 +55,17 @@ void EditorWindow::LoadFile(const QString &fileName)
     textEdit->setPlainText(in.readAll());
 }
 
-float EditorWindow::GetValParam(const QString &line, QString param, bool *ok, QString instr)
+std::optional<float> EditorWindow::GetValParam(const QString &line, QString param, QString instr)
 {
-    float res = 0.0;
     // Example:
     // "G1 X100 Y200.03 F300"
     // RegExp "G1.*Y\s*(\d+\.{0,1}\d+)" for Y
     QString rxString = QString("%1.*%2\\s*(\\d+\\.{0,1}\\d+)").arg(instr, param);
     QRegExp rx(rxString);
     if (rx.indexIn(line) != -1)
-    {
-        res = rx.cap(1).toFloat();
-        *ok = true;
-    }
+        return std::optional<float>{rx.cap(1).toFloat()};
     else
-        *ok = false;
-    return res;
+        return std::nullopt;
 }
 
 std::optional<GlobState::systemType_t> EditorWindow::GetSystemType(const QString &line)
@@ -93,28 +88,28 @@ std::optional<GlobState::systemType_t> EditorWindow::GetSystemType(const QString
 
 void EditorWindow::Parser(const QString &line)
 {
-    bool ok = false;
-
     std::optional<GlobState::systemType_t> systemType = GetSystemType(line);
     if (systemType)
     {
         globState_.SetSystemType(*systemType);
     }
 
-    float x = GetValParam(line, "X", &ok);
-    if (ok)
+    std::optional<float> val = GetValParam(line, "X");
+    if (val)
     {
-        globState_.SetGlobX(x, globState_.GetSystemType());
+        globState_.SetGlobX(*val, globState_.GetSystemType());
     }
-    float y = GetValParam(line, "Y", &ok);
-    if (ok)
+
+    val = GetValParam(line, "Y");
+    if (val)
     {
-        globState_.SetGlobY(y, globState_.GetSystemType());
+        globState_.SetGlobY(*val, globState_.GetSystemType());
     }
-    float z = GetValParam(line, "Z", &ok);
-    if (ok)
+
+    val = GetValParam(line, "Z");
+    if (val)
     {
-        globState_.SetGlobZ(z, globState_.GetSystemType());
+        globState_.SetGlobZ(*val, globState_.GetSystemType());
     }
 }
 
