@@ -24,7 +24,7 @@ private:
     void  CreateActions();
     float GetValParam(const QString &line, QString param, bool *ok = nullptr, QString instr = "G1");
     void  Parser(const QString &line);
-    GlobState::systemType_t GetSystemType(const QString &line, bool *ok);
+    std::optional<GlobState::systemType_t> GetSystemType(const QString &line);
 
     GlobState globState_;
     QPlainTextEdit *textEdit;

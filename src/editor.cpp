@@ -1,6 +1,7 @@
 #include <QtWidgets>
 #include <QDebug>
 #include <vector>
+#include <optional>
 
 #include "inc/editor.h"
 #include "inc/glob_state.h"
@@ -72,39 +73,32 @@ float EditorWindow::GetValParam(const QString &line, QString param, bool *ok, QS
     return res;
 }
 
-GlobState::systemType_t EditorWindow::GetSystemType(const QString &line, bool *ok)
+std::optional<GlobState::systemType_t> EditorWindow::GetSystemType(const QString &line)
 {
-    *ok = false;
-    GlobState::systemType_t sysType = GlobState::ABS;
-
     QRegExp rx("*G90*");
     rx.setPatternSyntax(QRegExp::Wildcard);
     if (rx.exactMatch(line))
     {
-        sysType = GlobState::ABS;
-        *ok = true;
-        return sysType;
+        return std::optional<GlobState::systemType_t>{GlobState::ABS};
     }
 
     rx.setPattern("*G91*");
     if (rx.exactMatch(line))
     {
-        sysType = GlobState::REL;
-        *ok = true;
-        return sysType;
+        return std::optional<GlobState::systemType_t>{GlobState::REL};
     }
-    return sysType;
+
+    return std::nullopt;
 }
 
 void EditorWindow::Parser(const QString &line)
 {
     bool ok = false;
-    GlobState::systemType_t sysTypeTemp;
 
-    sysTypeTemp = GetSystemType(line, &ok);
-    if (ok)
+    std::optional<GlobState::systemType_t> systemType = GetSystemType(line);
+    if (systemType)
     {
-        globState_.SetSystemType(sysTypeTemp);
+        globState_.SetSystemType(*systemType);
     }
 
     float x = GetValParam(line, "X", &ok);
