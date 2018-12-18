@@ -14,6 +14,11 @@ public:
     };
 
     Line();
+    void SetPointStart(Point start);
+    void SetPointEnd(Point start);
+
+    Point GetPointStart(void);
+    Point GetPointEnd(void);
 
 private:
     sLine line_;
