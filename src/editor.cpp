@@ -88,6 +88,9 @@ std::optional<GlobState::systemType_t> EditorWindow::GetSystemType(const QString
 
 void EditorWindow::Parser(const QString &line)
 {
+    bool isModify = false;
+    GlobState::formatLine_t formatLine;
+    globState_.GetFormatLine(&formatLine);
     std::optional<GlobState::systemType_t> systemType = GetSystemType(line);
     if (systemType)
     {
@@ -98,19 +101,44 @@ void EditorWindow::Parser(const QString &line)
     if (val)
     {
         globState_.SetGlobX(*val, globState_.GetSystemType());
+        isModify = true;
     }
 
     val = GetValParam(line, "Y");
     if (val)
     {
         globState_.SetGlobY(*val, globState_.GetSystemType());
+        isModify = true;
     }
 
     val = GetValParam(line, "Z");
     if (val)
     {
         globState_.SetGlobZ(*val, globState_.GetSystemType());
+        isModify = true;
     }
+
+    Point point;
+    point.SetX(globState_.GetGlobX());
+    point.SetY(globState_.GetGlobY());
+    point.SetZ(globState_.GetGlobZ());
+
+    if (formatLine.countPoint == 0)
+    {
+        formatLine.countPoint = 1;
+    }
+    else if (formatLine.countPoint == 1)
+    {
+        formatLine.countPoint = 2;
+        formatLine.isCompleteLine = true;
+    }
+    else
+    {
+        formatLine.countPoint = 0;
+        formatLine.isCompleteLine = false;
+    }
+
+    globState_.SetFormatLine(formatLine);
 }
 
 void EditorWindow::Calc()
@@ -125,25 +153,9 @@ void EditorWindow::Calculate(const QString &gcode)
     QString s(gcode);
     QTextStream text(&s);
 
-    typedef struct
-    {
-        uint countPoint;
-        bool isCompleteLine;
-        bool isDraw;
-
-    }  formatLine_t;
-
-    formatLine_t xPoint{.countPoint = 0, .isCompleteLine = false, .isDraw = true};
-    formatLine_t yPoint{.countPoint = 0, .isCompleteLine = false, .isDraw = true};
-    formatLine_t zPoint{.countPoint = 0, .isCompleteLine = false, .isDraw = true};
-
-
-
     while(!text.atEnd())
     {
-
         QString line = text.readLine();
         Parser(line);
-
     }
 }
