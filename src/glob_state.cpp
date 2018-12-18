@@ -1,10 +1,13 @@
 #include "inc/glob_state.h"
+#include "inc/line.h"
+#include "inc/point.h"
 
 GlobState::GlobState()
     : sysType_(ABS)
     , glob_point_(0.0, 0.0, 0.0)
     , local_point_(0.0, 0.0, 0.0)
-
+    , formatLine_{1, false, false}
+    , line_()
 {
 }
 
@@ -40,6 +43,30 @@ void  GlobState::SetGlobZ(float z, systemType_t sysType)
         glob_point_.SetZ(z);
     else
         glob_point_.SetZ(glob_point_.GetZ() + z);
+}
+
+void GlobState::SetFormatLine(formatLine_t fLine)
+{
+    formatLine_.countPoint     = fLine.countPoint;
+    formatLine_.isCompleteLine = fLine.isCompleteLine;
+    formatLine_.isDraw         = fLine.isDraw;
+}
+
+void GlobState::GetFormatLine(formatLine_t *fLine)
+{
+    fLine->countPoint     = formatLine_.countPoint;
+    fLine->isCompleteLine = formatLine_.isCompleteLine;
+    fLine->isDraw         = formatLine_.isDraw;
+}
+
+void GlobState::SetLine(Line line)
+{
+    line_ = line;
+}
+
+Line GlobState::GetLine(void)
+{
+    return line_;
 }
 
 float GlobState::GetGlobX(void)
