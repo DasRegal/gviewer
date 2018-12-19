@@ -118,12 +118,30 @@ void EditorWindow::Parser(const QString &line)
     GlobState::formatLine_t formatLine;
     globState_.GetFormatLine(&formatLine);
 
+    Point point;
+    if (globState_.IsListEmpty())
+    {
+        point.SetX(0.0);
+        point.SetY(0.0);
+        point.SetZ(0.0);
+
+        formatLine.line.start = point;
+
+    }
+    else
+    {
+        point.SetX(globState_.GetGlobX());
+        point.SetY(globState_.GetGlobY());
+        point.SetZ(globState_.GetGlobZ());
+
+        formatLine.line.start = point;
+    }
+
     std::optional<float> val = GetValParam(line, "X");
     if (val)
     {
         globState_.SetGlobX(*val, globState_.GetSystemType());
         isModify = true;
-        qDebug() << globState_.GetGlobX();
     }
 
     val = GetValParam(line, "Y");
@@ -131,7 +149,6 @@ void EditorWindow::Parser(const QString &line)
     {
         globState_.SetGlobY(*val, globState_.GetSystemType());
         isModify = true;
-        qDebug() << globState_.GetGlobY();
     }
 
     val = GetValParam(line, "Z");
@@ -147,24 +164,12 @@ void EditorWindow::Parser(const QString &line)
         formatLine.line.isVisible = *isDraw;
     }
 
-    Point point;
     point.SetX(globState_.GetGlobX());
     point.SetY(globState_.GetGlobY());
     point.SetZ(globState_.GetGlobZ());
+    formatLine.line.end = point;
 
-    if (formatLine.countPoint == 0)
-    {
-        formatLine.countPoint = 1;
-        formatLine.isCompleteLine = false;
-        formatLine.line.start = point;
-    }
-    else if (formatLine.countPoint == 1)
-    {
-        formatLine.countPoint = 0;
-        formatLine.isCompleteLine = true;
-        formatLine.line.end = point;
-    }
-
+    globState_.AddLineToList(formatLine);
     globState_.SetFormatLine(formatLine);
 }
 
