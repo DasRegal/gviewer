@@ -17,7 +17,7 @@ public:
     {
         unsigned int countPoint;
         bool         isCompleteLine;
-        bool         isDraw;
+        Line::sLine  line;
 
     }  formatLine_t;
 

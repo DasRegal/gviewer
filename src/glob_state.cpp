@@ -6,7 +6,7 @@ GlobState::GlobState()
     : sysType_(ABS)
     , glob_point_(0.0, 0.0, 0.0)
     , local_point_(0.0, 0.0, 0.0)
-    , formatLine_{1, false, false}
+    , formatLine_{1, false, {0, 0, true}}
     , line_()
 {
 }
