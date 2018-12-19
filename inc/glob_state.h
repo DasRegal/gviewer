@@ -3,6 +3,7 @@
 
 #include <inc/point.h>
 #include <inc/line.h>
+#include <vector>
 
 class GlobState
 {
@@ -35,6 +36,8 @@ public:
     void GetFormatLine(formatLine_t *fLine);
     void SetLine(Line line);
     Line GetLine(void);
+    void AddLineToList(formatLine_t fLine);
+    bool IsListEmpty(void);
 
     void  SetLocalX(float x);
     void  SetLocalY(float y);
@@ -49,6 +52,7 @@ private:
     Point        local_point_;
     formatLine_t formatLine_;
     Line         line_;
+    std::vector<Line::sLine> lineArray_;
 };
 
 #endif // GLOB_STATE_H

@@ -49,14 +49,12 @@ void GlobState::SetFormatLine(formatLine_t fLine)
 {
     formatLine_.countPoint     = fLine.countPoint;
     formatLine_.isCompleteLine = fLine.isCompleteLine;
-    formatLine_.isDraw         = fLine.isDraw;
 }
 
 void GlobState::GetFormatLine(formatLine_t *fLine)
 {
     fLine->countPoint     = formatLine_.countPoint;
     fLine->isCompleteLine = formatLine_.isCompleteLine;
-    fLine->isDraw         = formatLine_.isDraw;
 }
 
 void GlobState::SetLine(Line line)
@@ -67,6 +65,16 @@ void GlobState::SetLine(Line line)
 Line GlobState::GetLine(void)
 {
     return line_;
+}
+
+void GlobState::AddLineToList(formatLine_t fLine)
+{
+    lineArray_.push_back(fLine.line);
+}
+
+bool GlobState::IsListEmpty(void)
+{
+    return lineArray_.empty();
 }
 
 float GlobState::GetGlobX(void)
