@@ -22,9 +22,10 @@ private slots:
 
 private:
     void  CreateActions();
-    std::optional<float> GetValParam(const QString &line, QString param, QString instr = "G1");
+    std::optional<float> GetValParam(const QString &line, QString param);
     void  Parser(const QString &line);
     std::optional<GlobState::systemType_t> GetSystemType(const QString &line);
+    std::optional<bool> IsLineDraw(const QString &line);
 
     GlobState globState_;
     QPlainTextEdit *textEdit;

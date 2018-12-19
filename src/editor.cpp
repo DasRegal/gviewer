@@ -55,13 +55,14 @@ void EditorWindow::LoadFile(const QString &fileName)
     textEdit->setPlainText(in.readAll());
 }
 
-std::optional<float> EditorWindow::GetValParam(const QString &line, QString param, QString instr)
+std::optional<float> EditorWindow::GetValParam(const QString &line, QString param)
 {
     // Example:
     // "G1 X100 Y200.03 F300"
-    // RegExp "G1.*Y\s*(\d+\.{0,1}\d+)" for Y
-    QString rxString = QString("%1.*%2\\s*(\\d+\\.{0,1}\\d+)").arg(instr, param);
+    // RegExp "G1.*Y\s*(\d*\.{0,1}\d+)" for Y
+    QString rxString = QString("G[01].*%2\\s*(\\d*\\.{0,1}\\d+)").arg(param);
     QRegExp rx(rxString);
+    rx.setPatternSyntax(QRegExp::RegExp);
     if (rx.indexIn(line) != -1)
         return std::optional<float>{rx.cap(1).toFloat()};
     else
@@ -86,22 +87,43 @@ std::optional<GlobState::systemType_t> EditorWindow::GetSystemType(const QString
     return std::nullopt;
 }
 
+std::optional<bool> EditorWindow::IsLineDraw(const QString &line)
+{
+    QRegExp rx("*G1*");
+    rx.setPatternSyntax(QRegExp::Wildcard);
+    if (rx.exactMatch(line))
+    {
+        return std::optional<bool>{ true };
+    }
+
+    rx.setPattern("*G0*");
+    if (rx.exactMatch(line))
+    {
+        return std::optional<bool>{ false };
+    }
+
+    return std::nullopt;
+}
+
 void EditorWindow::Parser(const QString &line)
 {
-    bool isModify = false;
-    GlobState::formatLine_t formatLine;
-    globState_.GetFormatLine(&formatLine);
     std::optional<GlobState::systemType_t> systemType = GetSystemType(line);
     if (systemType)
     {
         globState_.SetSystemType(*systemType);
+        return;
     }
+
+    bool isModify = false;
+    GlobState::formatLine_t formatLine;
+    globState_.GetFormatLine(&formatLine);
 
     std::optional<float> val = GetValParam(line, "X");
     if (val)
     {
         globState_.SetGlobX(*val, globState_.GetSystemType());
         isModify = true;
+        qDebug() << globState_.GetGlobX();
     }
 
     val = GetValParam(line, "Y");
@@ -109,6 +131,7 @@ void EditorWindow::Parser(const QString &line)
     {
         globState_.SetGlobY(*val, globState_.GetSystemType());
         isModify = true;
+        qDebug() << globState_.GetGlobY();
     }
 
     val = GetValParam(line, "Z");
@@ -116,6 +139,12 @@ void EditorWindow::Parser(const QString &line)
     {
         globState_.SetGlobZ(*val, globState_.GetSystemType());
         isModify = true;
+    }
+
+    std::optional<bool > isDraw = IsLineDraw(line);
+    if (isDraw != std::nullopt)
+    {
+        formatLine.line.isVisible = *isDraw;
     }
 
     Point point;
@@ -126,16 +155,14 @@ void EditorWindow::Parser(const QString &line)
     if (formatLine.countPoint == 0)
     {
         formatLine.countPoint = 1;
+        formatLine.isCompleteLine = false;
+        formatLine.line.start = point;
     }
     else if (formatLine.countPoint == 1)
     {
-        formatLine.countPoint = 2;
-        formatLine.isCompleteLine = true;
-    }
-    else
-    {
         formatLine.countPoint = 0;
-        formatLine.isCompleteLine = false;
+        formatLine.isCompleteLine = true;
+        formatLine.line.end = point;
     }
 
     globState_.SetFormatLine(formatLine);
