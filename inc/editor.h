@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "inc/glob_state.h"
+#include "inc/plotter.h"
 
 class QPlainTextEdit;
 
@@ -29,6 +30,7 @@ private:
 
     GlobState globState_;
     QPlainTextEdit *textEdit;
+    Plotter plotter;
 };
 
 #endif // EDITOR_H

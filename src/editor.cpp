@@ -5,12 +5,14 @@
 
 #include "inc/editor.h"
 #include "inc/glob_state.h"
+#include "inc/plotter.h"
+#include "inc/renderarea.h"
 
 EditorWindow::EditorWindow()
     : textEdit(new QPlainTextEdit)
 {
     setCentralWidget(textEdit);
-
+    Plotter plotter;
     CreateActions();
 }
 
@@ -175,6 +177,7 @@ void EditorWindow::Parser(const QString &line)
 
 void EditorWindow::Calc()
 {
+    plotter.show();
     QString gcode = textEdit->toPlainText();
     if (!gcode.isEmpty())
         Calculate(gcode);
@@ -190,4 +193,6 @@ void EditorWindow::Calculate(const QString &gcode)
         QString line = text.readLine();
         Parser(line);
     }
+
+    plotter.DrawLines(globState_.GetList());
 }
