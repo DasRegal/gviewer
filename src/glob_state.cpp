@@ -72,6 +72,11 @@ void GlobState::AddLineToList(formatLine_t fLine)
     lineArray_.push_back(fLine.line);
 }
 
+std::vector<Line::sLine> GlobState::GetList(void)
+{
+    return lineArray_;
+}
+
 bool GlobState::IsListEmpty(void)
 {
     return lineArray_.empty();

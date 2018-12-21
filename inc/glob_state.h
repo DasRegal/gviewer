@@ -38,6 +38,7 @@ public:
     Line GetLine(void);
     void AddLineToList(formatLine_t fLine);
     bool IsListEmpty(void);
+    std::vector<Line::sLine> GetList(void);
 
     void  SetLocalX(float x);
     void  SetLocalY(float y);

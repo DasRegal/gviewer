@@ -29,13 +29,17 @@ SOURCES += \
     src/editor.cpp \
     src/glob_state.cpp \
     src/point.cpp \
-    src/line.cpp
+    src/line.cpp \
+    src/plotter.cpp \
+    src/renderarea.cpp
 
 HEADERS += \
     inc/editor.h \
     inc/glob_state.h \
     inc/point.h \
-    inc/line.h
+    inc/line.h \
+    inc/plotter.h \
+    inc/renderarea.h
 
 FORMS +=
 
