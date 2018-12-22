@@ -61,8 +61,8 @@ std::optional<float> EditorWindow::GetValParam(const QString &line, QString para
 {
     // Example:
     // "G1 X100 Y200.03 F300"
-    // RegExp "G1.*Y\s*(\d*\.{0,1}\d+)" for Y
-    QString rxString = QString("G[01].*%2\\s*(\\d*\\.{0,1}\\d+)").arg(param);
+    // RegExp "G[01].*Y\s*(-{0,1}\d*\.{0,1}\d+)" for Y
+    QString rxString = QString("G[01].*%2\\s*(-{0,1}\\d*\\.{0,1}\\d+)").arg(param);
     QRegExp rx(rxString);
     rx.setPatternSyntax(QRegExp::RegExp);
     if (rx.indexIn(line) != -1)
