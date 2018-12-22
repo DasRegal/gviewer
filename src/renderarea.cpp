@@ -16,14 +16,16 @@ RenderArea::RenderArea(QWidget *parent)
 
 void RenderArea::paintEvent(QPaintEvent * /* event */)
 {
-    QRect rect(10, 20, 80, 60);
-
-    QPainterPath path;
-    path.moveTo(20, 80);
-    path.lineTo(20, 30);
-    path.cubicTo(80, 0, 50, 50, 80, 80);
-
     QPainter painter(this);
+    for (Line::sLine line : lines_)
+    {
+        if (line.isVisible)
+        {
+            Point start = line.start;
+            Point end = line.end;
+            painter.drawLine(start.GetX(), start.GetY(), end.GetX(), end.GetY());
+        }
+    }
 
     painter.setRenderHint(QPainter::Antialiasing, false);
     painter.setPen(palette().dark().color());
@@ -33,16 +35,6 @@ void RenderArea::paintEvent(QPaintEvent * /* event */)
 
 void RenderArea::DrawLines(std::vector<Line::sLine> lines)
 {
-    QPainter painter(this);
-    painter.save();
-    for (Line::sLine line : lines)
-    {
-        if (line.isVisible)
-        {
-            Point start = line.start;
-            Point end = line.end;
-            painter.drawLine(start.GetX(), start.GetY(), end.GetX(), end.GetY());
-        }
-    }
-    painter.restore();
+    lines_ = lines;
+    update();
 }

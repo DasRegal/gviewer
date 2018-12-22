@@ -10,10 +10,13 @@ class RenderArea : public QWidget
 
 public:
     RenderArea(QWidget *parent = 0);
+
+public slots:
     void DrawLines(std::vector<Line::sLine> line);
 
 protected:
     void paintEvent(QPaintEvent *event);
+    std::vector<Line::sLine> lines_;
 };
 
 #endif // RENDERAREA_H
