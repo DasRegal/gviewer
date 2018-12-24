@@ -33,7 +33,7 @@ void RenderArea::paintEvent(QPaintEvent * /* event */)
     painter.drawRect(QRect(0, 0, width() - 1, height() - 1));
 }
 
-void RenderArea::DrawLines(std::vector<Line::sLine> lines)
+void RenderArea::DrawLines(std::vector<Line::sLine> &lines)
 {
     lines_ = lines;
     update();

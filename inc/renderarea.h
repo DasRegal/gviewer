@@ -9,10 +9,10 @@ class RenderArea : public QWidget
     Q_OBJECT
 
 public:
-    RenderArea(QWidget *parent = 0);
+    RenderArea(QWidget *parent = nullptr);
 
 public slots:
-    void DrawLines(std::vector<Line::sLine> line);
+    void DrawLines(std::vector<Line::sLine> &line);
 
 protected:
     void paintEvent(QPaintEvent *event);
