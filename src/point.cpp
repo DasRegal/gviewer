@@ -1,4 +1,4 @@
-#include "inc/point.h"
+#include "../inc/point.h"
 
 Point::Point(float x, float y, float z)
     : point_(sPoint{x, y, z})

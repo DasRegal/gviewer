@@ -1,8 +1,8 @@
 #ifndef GLOB_STATE_H
 #define GLOB_STATE_H
 
-#include <inc/point.h>
-#include <inc/line.h>
+#include "point.h"
+#include "line.h"
 #include <vector>
 
 class GlobState

@@ -1,9 +1,9 @@
 #include <QtGui>
 #include <QWidget>
 
-#include "inc/renderarea.h"
-#include "inc/line.h"
-#include "inc/point.h"
+#include "../inc/renderarea.h"
+#include "../inc/line.h"
+#include "../inc/point.h"
 
 class QSpinBox;
 

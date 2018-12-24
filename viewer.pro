@@ -50,3 +50,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     application.qrc
+
+DISTFILES += \
+    CMakeLists.txt

@@ -2,8 +2,9 @@
 #define EDITOR_H
 
 #include <QMainWindow>
-#include "inc/glob_state.h"
-#include "inc/plotter.h"
+#include <optional>
+#include "glob_state.h"
+#include "plotter.h"
 
 class QPlainTextEdit;
 

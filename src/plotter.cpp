@@ -1,8 +1,8 @@
 #include <QtGui>
 #include <QGridLayout>
 
-#include "inc/plotter.h"
-#include "inc/renderarea.h"
+#include "../inc/plotter.h"
+#include "../inc/renderarea.h"
 
 Plotter::Plotter()
 {

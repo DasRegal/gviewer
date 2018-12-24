@@ -3,10 +3,10 @@
 #include <vector>
 #include <optional>
 
-#include "inc/editor.h"
-#include "inc/glob_state.h"
-#include "inc/plotter.h"
-#include "inc/renderarea.h"
+#include "../inc/editor.h"
+#include "../inc/glob_state.h"
+#include "../inc/plotter.h"
+#include "../inc/renderarea.h"
 
 EditorWindow::EditorWindow()
     : textEdit(new QPlainTextEdit)

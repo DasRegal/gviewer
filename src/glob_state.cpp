@@ -1,6 +1,6 @@
-#include "inc/glob_state.h"
-#include "inc/line.h"
-#include "inc/point.h"
+#include "../inc/glob_state.h"
+#include "../inc/line.h"
+#include "../inc/point.h"
 
 GlobState::GlobState()
     : sysType_(ABS)

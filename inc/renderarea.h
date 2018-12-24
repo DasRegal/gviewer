@@ -2,7 +2,7 @@
 #define RENDERAREA_H
 
 #include <QWidget>
-#include "inc/line.h"
+#include "line.h"
 
 class RenderArea : public QWidget
 {

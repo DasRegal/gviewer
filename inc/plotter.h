@@ -2,7 +2,7 @@
 #define PLOTTER_H
 
 #include <QWidget>
-#include "inc/line.h"
+#include "line.h"
 
 class RenderArea;
 
