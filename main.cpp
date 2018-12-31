@@ -1,5 +1,6 @@
 #include "inc/editor.h"
 #include <QApplication>
+#include <QtPlugin>
 
 int main(int argc, char *argv[])
 {
